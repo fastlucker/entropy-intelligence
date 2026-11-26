@@ -78,6 +78,6 @@ class BaseAPIHandler(BaseHTTPRequestHandler):
    payload=json.loads(self.rfile.read(length))
    if not valid_hl(payload):raise ValueError()
   except (ValueError,TypeError,UnicodeDecodeError):return self.send(400,'{"error":"invalid request"}')
-  try:self.send(200,fetch_provider('info',payload))
+  try:self.send(200,fetch_provider('info',payload),{'X-Data-Updated':int(time()),'X-Data-Note':'Time of successful collection, not funding settlement'})
   except APIError as e:self.send(e.status,json.dumps({'error':e.message,'retry_after_seconds':e.retry}),{'Retry-After':e.retry} if e.retry else None)
  def log_message(self,*a):pass
